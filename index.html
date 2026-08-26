@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#6d5dfc"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css"><title>Gastos Familiares</title>
+</head>
+<body>
+<div id="welcome" class="welcome">
+  <div class="welcome-card">
+    <div class="logo">🏠</div>
+    <h1>Gastos Familiares</h1>
+    <p>Organicemos juntos las finanzas del hogar.</p>
+    <button class="primary" onclick="showCreate()">Crear nuestro hogar</button>
+    <button class="secondary full" onclick="showJoin()">Tengo una invitación</button>
+  </div>
+</div>
+
+<div id="onboarding" class="welcome hidden">
+  <div class="welcome-card">
+    <button class="back" onclick="showWelcome()">← Volver</button>
+    <div id="createView">
+      <div class="logo small">👩‍❤️‍👨</div>
+      <h2>Crear nuestro hogar</h2>
+      <p>Primero crea el espacio compartido donde estarán sus gastos.</p>
+      <label>Nombre del hogar
+        <input id="homeName" placeholder="Ej. Familia Gómez" maxlength="50">
+      </label>
+      <label>Tu nombre
+        <input id="myName" placeholder="Ej. Jessica" maxlength="40">
+      </label>
+      <button class="primary" onclick="createHome()">Crear hogar</button>
+    </div>
+    <div id="joinView" class="hidden">
+      <div class="logo small">💌</div>
+      <h2>Unirme al hogar</h2>
+      <p>Ingresa el código que te compartió tu pareja.</p>
+      <label>Código de invitación
+        <input id="inviteCode" placeholder="Ej. HOGAR-8F3K" maxlength="20" style="text-transform:uppercase">
+      </label>
+      <label>Tu nombre
+        <input id="joinName" placeholder="Ej. Mi nombre" maxlength="40">
+      </label>
+      <button class="primary" onclick="joinHome()">Unirme al hogar</button>
+    </div>
+    <div id="inviteResult" class="hidden">
+      <div class="success">✓ Hogar creado</div>
+      <h2>Invita a tu esposo</h2>
+      <p>Comparte este código con él:</p>
+      <div class="invite-code" id="generatedCode"></div>
+      <button class="primary" onclick="copyInvite()">Copiar código</button>
+      <button class="secondary full" onclick="enterApp()">Entrar a mi aplicación</button>
+      <small class="note">En la versión conectada a la nube, este código será único y permitirá que ambos vean los mismos gastos.</small>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<header class="topbar"><div><small id="homeTitle">HOGAR</small><h1>Gastos Familiares</h1></div><button id="installBtn" class="secondary hidden">Instalar</button></header>
+<main>
+<section class="house-card"><div><span>Hogar compartido</span><strong id="homeDisplay">—</strong></div><div class="members" id="members">👤 Tú</div></section>
+<section class="summary"><div class="card main-card"><span>Gastado este mes</span><strong id="total">$0</strong><small id="monthLabel"></small></div><div class="mini-grid"><div class="card"><span>Registros</span><strong id="count">0</strong></div><div class="card"><span>Mayor categoría</span><strong id="topCategory">—</strong></div></div></section>
+<nav class="tabs"><button class="tab active" data-tab="dashboard">Resumen</button><button class="tab" data-tab="add">+ Gasto</button><button class="tab" data-tab="history">Historial</button><button class="tab" data-tab="categories">Categorías</button></nav>
+<section id="dashboard" class="panel active"><div class="section-title"><h2>Gastos por categoría</h2></div><div id="categorySummary" class="list"></div></section>
+<section id="add" class="panel"><div class="section-title"><h2>Registrar gasto</h2></div><form id="expenseForm" class="form">
+<label>Valor<input id="amount" type="number" min="1" required></label><label>Fecha<input id="date" type="date" required></label>
+<label>Categoría<select id="category" required></select></label><label>Quién pagó<select id="paidBy"><option>Yo</option><option>Esposo</option></select></label>
+<label>Medio de pago<select id="method"><option>Débito</option><option>Crédito</option><option>Efectivo</option><option>Transferencia</option><option>Otro</option></select></label>
+<label>Descripción<input id="description" maxlength="120" placeholder="Ej. Mercado de la semana"></label><button class="primary" type="submit">Guardar gasto</button></form></section>
+<section id="history" class="panel"><div class="section-title"><h2>Historial</h2><button id="clearBtn" class="danger-text">Borrar todo</button></div><div id="historyList" class="list"></div></section>
+<section id="categories" class="panel"><div class="section-title"><h2>Mis categorías</h2></div><form id="categoryForm" class="inline-form"><input id="newCategory" maxlength="40" placeholder="Nueva categoría" required><button class="primary" type="submit">Agregar</button></form><div id="categoryList" class="chips"></div></section>
+</main><div id="toast" class="toast"></div>
+</div>
+<script src="app.js"></script>
+</body></html>
