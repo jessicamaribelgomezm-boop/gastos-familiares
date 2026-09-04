@@ -19,18 +19,35 @@
 <div id="onboarding" class="welcome hidden">
   <div class="welcome-card">
     <button class="back" onclick="showWelcome()">← Volver</button>
-    <div id="createView">
-      <div class="logo small">👩‍❤️‍👨</div>
+
+    <div id="authView">
+      <div class="logo small">🔐</div>
+      <h2 id="authTitle">Crear tu cuenta</h2>
+      <p id="authText">Usaremos tu cuenta para sincronizar los gastos entre los dos celulares.</p>
+      <label>Tu nombre
+        <input id="authName" placeholder="Ej. Jessica" maxlength="40">
+      </label>
+      <label>Correo electrónico
+        <input id="authEmail" type="email" placeholder="correo@ejemplo.com" autocomplete="email">
+      </label>
+      <label>Contraseña
+        <input id="authPassword" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+      </label>
+      <button class="primary" onclick="submitAuth()" id="authButton">Crear cuenta</button>
+      <button class="secondary full" onclick="toggleAuthMode()" id="authToggle">Ya tengo una cuenta</button>
+      <div id="authMessage" class="note"></div>
+    </div>
+
+    <div id="createView" class="hidden">
+      <div class="logo small">🏠</div>
       <h2>Crear nuestro hogar</h2>
-      <p>Primero crea el espacio compartido donde estarán sus gastos.</p>
+      <p>Ya tienes una cuenta. Ahora crea el espacio compartido.</p>
       <label>Nombre del hogar
         <input id="homeName" placeholder="Ej. Familia Gómez" maxlength="50">
       </label>
-      <label>Tu nombre
-        <input id="myName" placeholder="Ej. Jessica" maxlength="40">
-      </label>
       <button class="primary" onclick="createHome()">Crear hogar</button>
     </div>
+
     <div id="joinView" class="hidden">
       <div class="logo small">💌</div>
       <h2>Unirme al hogar</h2>
@@ -38,11 +55,9 @@
       <label>Código de invitación
         <input id="inviteCode" placeholder="Ej. HOGAR-8F3K" maxlength="20" style="text-transform:uppercase">
       </label>
-      <label>Tu nombre
-        <input id="joinName" placeholder="Ej. Mi nombre" maxlength="40">
-      </label>
       <button class="primary" onclick="joinHome()">Unirme al hogar</button>
     </div>
+
     <div id="inviteResult" class="hidden">
       <div class="success">✓ Hogar creado</div>
       <h2>Invita a tu esposo</h2>
@@ -50,7 +65,7 @@
       <div class="invite-code" id="generatedCode"></div>
       <button class="primary" onclick="copyInvite()">Copiar código</button>
       <button class="secondary full" onclick="enterApp()">Entrar a mi aplicación</button>
-      <small class="note">En la versión conectada a la nube, este código será único y permitirá que ambos vean los mismos gastos.</small>
+      <small class="note">Cuando tu esposo se una con este código, ambos verán los mismos gastos.</small>
     </div>
   </div>
 </div>
@@ -71,5 +86,7 @@
 <section id="categories" class="panel"><div class="section-title"><h2>Mis categorías</h2></div><form id="categoryForm" class="inline-form"><input id="newCategory" maxlength="40" placeholder="Nueva categoría" required><button class="primary" type="submit">Agregar</button></form><div id="categoryList" class="chips"></div></section>
 </main><div id="toast" class="toast"></div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 <script src="app.js"></script>
 </body></html>
