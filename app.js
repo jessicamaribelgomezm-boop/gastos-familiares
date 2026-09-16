@@ -1,6 +1,6 @@
+const supabaseLib = window.supabase || null;
 const configured = window.SUPABASE_URL && !window.SUPABASE_URL.startsWith('PEGA_AQUI') && window.SUPABASE_ANON_KEY && !window.SUPABASE_ANON_KEY.startsWith('PEGA_AQUI');
-const supabase = configured && window.supabase?.createClient ? window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY) : null;
-if(configured && !supabase){ console.error('Supabase JS no se pudo cargar.'); }
+const supabase = configured && supabaseLib?.createClient ? supabaseLib.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY) : null;
 
 let authMode = 'signup'; // signup | login
 let onboardingMode = 'create'; // create | join
@@ -19,13 +19,14 @@ $('date').value = today;
 $('monthLabel').textContent = new Intl.DateTimeFormat('es-CO',{month:'long',year:'numeric'}).format(new Date());
 
 function configuredGuard(){
-  if(!configured){ alert('Falta configurar Supabase. En breve te indicaré dónde pegar el Project URL y la Publishable/anon key.'); return false; }
+  if(!configured){ alert('Falta configurar Supabase.'); return false; }
+  if(!supabase){ alert('No se pudo cargar la conexión de Supabase. Actualiza la página e inténtalo de nuevo.'); return false; }
   return true;
 }
-window.showWelcome = function showWelcome(){ $('welcome').classList.remove('hidden'); $('onboarding').classList.add('hidden'); }
-window.showOnboarding = function showOnboarding(){ $('welcome').classList.add('hidden'); $('onboarding').classList.remove('hidden'); }
-window.showCreate = function showCreate(){ onboardingMode='create'; authMode='signup'; showOnboarding(); $('authView').classList.remove('hidden'); $('createView').classList.add('hidden'); $('joinView').classList.add('hidden'); $('inviteResult').classList.add('hidden'); updateAuthUI(); }
-window.showJoin = function showJoin(){ onboardingMode='join'; authMode='signup'; showOnboarding(); $('authView').classList.remove('hidden'); $('createView').classList.add('hidden'); $('joinView').classList.add('hidden'); $('inviteResult').classList.add('hidden'); updateAuthUI(); }
+function showWelcome(){ $('welcome').classList.remove('hidden'); $('onboarding').classList.add('hidden'); }
+function showOnboarding(){ $('welcome').classList.add('hidden'); $('onboarding').classList.remove('hidden'); }
+function showCreate(){ onboardingMode='create'; authMode='signup'; showOnboarding(); $('authView').classList.remove('hidden'); $('createView').classList.add('hidden'); $('joinView').classList.add('hidden'); $('inviteResult').classList.add('hidden'); updateAuthUI(); }
+function showJoin(){ onboardingMode='join'; authMode='signup'; showOnboarding(); $('authView').classList.remove('hidden'); $('createView').classList.add('hidden'); $('joinView').classList.add('hidden'); $('inviteResult').classList.add('hidden'); updateAuthUI(); }
 function updateAuthUI(){
   $('authTitle').textContent = authMode==='signup' ? 'Crear tu cuenta' : 'Iniciar sesión';
   $('authText').textContent = authMode==='signup' ? 'Usaremos tu cuenta para sincronizar los gastos entre los dos celulares.' : 'Entra con tu cuenta para continuar.';
@@ -34,10 +35,10 @@ function updateAuthUI(){
   $('authToggle').textContent = authMode==='signup' ? 'Ya tengo una cuenta' : 'Crear una cuenta nueva';
   $('authMessage').textContent='';
 }
-window.toggleAuthMode = function toggleAuthMode(){ authMode=authMode==='signup'?'login':'signup'; updateAuthUI(); }
+function toggleAuthMode(){ authMode=authMode==='signup'?'login':'signup'; updateAuthUI(); }
 function authMessage(t){ $('authMessage').textContent=t; }
 
-window.submitAuth = async function submitAuth(){
+async function submitAuth(){
   if(!configuredGuard()) return;
   const email=$('authEmail').value.trim(), password=$('authPassword').value;
   const name=$('authName').value.trim();
@@ -73,7 +74,7 @@ async function getMyHousehold(){
   return data?.households || null;
 }
 
-window.createHome = async function createHome(){
+async function createHome(){
   const name=($('homeName').value||'Nuestro hogar').trim();
   if(!name){alert('Escribe un nombre para el hogar.');return;}
   try{
@@ -86,7 +87,7 @@ window.createHome = async function createHome(){
   }catch(e){alert(e.message||'No fue posible crear el hogar.');}
 }
 
-window.joinHome = async function joinHome(){
+async function joinHome(){
   const code=($('inviteCode').value||'').trim().toUpperCase();
   if(!code){alert('Ingresa el código de invitación.');return;}
   try{
@@ -97,7 +98,7 @@ window.joinHome = async function joinHome(){
   }catch(e){alert(e.message||'No fue posible unirse al hogar.');}
 }
 
-window.copyInvite = function copyInvite(){ navigator.clipboard?.writeText($('generatedCode').textContent); alert('Código copiado ✓'); }
+function copyInvite(){ navigator.clipboard?.writeText($('generatedCode').textContent); alert('Código copiado ✓'); }
 function enterApp(){
   $('welcome').classList.add('hidden'); $('onboarding').classList.add('hidden'); $('app').classList.remove('hidden');
   if(household){ $('homeDisplay').textContent=household.name; $('homeTitle').textContent=household.invite_code; subscribeRealtime(); }
@@ -170,6 +171,7 @@ let deferred; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault
 
 (async()=>{
   if(!configured){ $('welcome').classList.remove('hidden'); return; }
+  if(!supabase){ console.error('Supabase JS no pudo cargarse.'); return; }
   const {data}=await supabase.auth.getSession();
   if(data.session){ currentUser=data.session.user; try{household=await getMyHousehold(); if(household){await loadData();enterApp();}}catch(e){console.error(e)} }
   supabase.auth.onAuthStateChange(async(_event,session)=>{currentUser=session?.user||null; if(session && !household){try{household=await getMyHousehold(); if(household){await loadData();enterApp();}}catch(e){console.error(e)}}});
