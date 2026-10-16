@@ -1,4 +1,4 @@
-```javascript
+
 const supabaseLib = window.supabase || null;
 
 const configured =
@@ -1142,4 +1142,3 @@ if (
     'sw.js'
   );
 }
-```
