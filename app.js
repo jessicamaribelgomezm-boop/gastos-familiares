@@ -1141,3 +1141,12 @@ if (
     'sw.js'
   );
 }
+window.showCreate = showCreate;
+window.showJoin = showJoin;
+window.showWelcome = showWelcome;
+window.submitAuth = submitAuth;
+window.toggleAuthMode = toggleAuthMode;
+window.createHome = createHome;
+window.joinHome = joinHome;
+window.copyInvite = copyInvite;
+window.enterApp = enterApp;
