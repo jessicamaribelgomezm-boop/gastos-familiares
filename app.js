@@ -1,4 +1,3 @@
-
 const supabaseLib = window.supabase || null;
 
 const configured =
